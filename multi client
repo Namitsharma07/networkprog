@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <arpa/inet.h>
+
+#define MULTICAST_GROUP "239.0.0.1"
+#define PORT 12345
+
+int main() {
+    int sockfd;
+    struct sockaddr_in multicastAddr;
+    char buff[128];
+    printf("Input>");
+    fgets(buff, 128, stdin);
+
+    // Step 1: Create socket
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+        perror("Socket creation error");
+        exit(EXIT_FAILURE);
+    }
+
+    // Step 2: Initialize sockaddr_in structure
+    memset(&multicastAddr, 0, sizeof(multicastAddr));
+    multicastAddr.sin_family = AF_INET;
+    multicastAddr.sin_addr.s_addr = inet_addr(MULTICAST_GROUP);
+    multicastAddr.sin_port = htons(PORT);
+
+    // Step 3: Set IP_MULTICAST_LOOP socket option
+    int enableLoop = 1;
+    if (setsockopt(sockfd, IPPROTO_IP, IP_MULTICAST_LOOP, &enableLoop, sizeof(enableLoop)) < 0) {
+        perror("Setting IP_MULTICAST_LOOP option error");
+        exit(EXIT_FAILURE);
+    }
+
+    // Step 4: Set IP_MULTICAST_IF socket option (optional, if sending on a specific interface)
+    // ...
+
+    // Step 5: Send the datagram
+    if (sendto(sockfd, buff, sizeof(buff), 0, (struct sockaddr*)&multicastAddr, sizeof(multicastAddr)) < 0) {
+        perror("Sendto error");
+        exit(EXIT_FAILURE);
+    }
+
+    close(sockfd);
+    return 0;
+}
