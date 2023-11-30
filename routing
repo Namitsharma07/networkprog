@@ -1,0 +1,70 @@
+ass-6
+give ips to pc's
+go to switch cli
+commands:
+vlan 10
+name Sales
+vlan 20
+name IT
+exit
+int fa0/1
+switchport mode access
+switchport access vlan 10
+int fa0/2
+switchport mode access 
+switchport access vlan 20
+int fa0/5 
+switchport mode trunk
+
+#go in routers cli
+int fa0/0.10
+encapsulation dot1q 10
+ip add 
+int fa0/0.20
+encapsulation dot1q 20
+ip add
+
+
+
+Ass-7    
+give ips to pc
+go to switch cli
+vlan 10
+name sales
+vlan 20
+name IT
+
+int vlan 10
+ip add
+int vlan 20
+ip add
+int fa0/1
+switchport mode access
+switchport access vlan 10
+int fa0/2
+switchport mode access 
+switchport access vlan 10
+
+ip routing 
+
+# give ip to the wire
+int fa1/0/3
+no switchport
+ip add
+no shut
+exit
+ip routing
+#do ospf routing
+router ospf 10
+netwok 192.168.1.0 0.0.0.255 area 0
+
+
+#go to router cli
+int fa0/0
+ip add (ip of wire)
+int fa0/1
+ip add (ip of server)
+exit
+
+router ospf 10
+network 10.10.10.0 0.0.0.255
